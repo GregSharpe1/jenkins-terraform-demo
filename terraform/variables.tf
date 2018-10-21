@@ -29,3 +29,8 @@ variable "ami_ubuntu" {
     us-west-2    = "ami-021702b92d9025550"
   }
 }
+
+variable "gregsharpe_route53_zone_public" {
+  description = "gregsharpe.co.uk public zone within AWS"
+  default     = "Z3L4PK1QV9Y3GP"
+}
