@@ -13,7 +13,7 @@ pipeline {
     booleanParam(
       defaultValue: false,
       description: "Would you like to destroy the environment?",
-      name: RunDestroy,
+      name: "RunDestroy"
     )
     string(
       name: "Parallelism",
