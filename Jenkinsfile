@@ -80,7 +80,7 @@ pipeline {
             if (userInput == true) {
               if (params.RunDestroy ==~ /(?i)(N|NO|F|FALSE|OFF)/){
                 echo "Apply"
-                sh "${TERRAFORM_CMD} apply -parallelism=${params.Parallelism}"
+                sh "${TERRAFORM_CMD} apply -parallelism=${params.Parallelism} -auto-approve"
               } else {
                 echo "Destroy"
                 sh "${TERRAFORM_CMD} destroy -parallelism=${params.Parallelism} -auto-approve"
