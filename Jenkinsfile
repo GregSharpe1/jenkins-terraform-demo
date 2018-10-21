@@ -9,6 +9,18 @@ pipeline {
     AWS_ACCESS_KEY_ID = credentials('JenkinsToS3_Public')
     AWS_SECRET_ACCESS_KEY = credentials('JenkinsToS3_Private')
   }
+  parameters {
+    booleanParam(
+      defaultValue: false,
+      description: "Would you like to destroy the environment?",
+      name: RunDestroy,
+    )
+    string(
+      name: "Parallelism",
+      defaultValue: "2",
+      description: "Run this in parallel?"
+    )
+  }
   stages {
     stage('Initialise') {
       steps {
