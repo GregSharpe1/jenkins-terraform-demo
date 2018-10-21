@@ -5,9 +5,9 @@ def userInput
 pipeline {
   agent any
   environment {
-    TERRAFORM_CMD = '/usr/local/bin/terraform'
+    TERRAFORM_CMD = '/usr/bin/terraform'
     AWS_ACCESS_KEY_ID = credentials('JenkinsToS3_Public')
-    AWS_SECRET_ACCESS_KEY = credentials("JenkinsToS3_Private')
+    AWS_SECRET_ACCESS_KEY = credentials('JenkinsToS3_Private')
   }
   stages {
     stage('Initialise') {
@@ -69,7 +69,7 @@ pipeline {
             if (userInput == true) {
               if (params.RunDestroy ==~ /(?i)(N|NO|F|FALSE|OFF)/){
                 echo "Apply"
-                sh "${TERRAFORM_CMD} apply -parallelism=${params.Parallelism}""
+                sh "${TERRAFORM_CMD} apply -parallelism=${params.Parallelism}"
               } else {
                 echo "Destroy"
                 sh "${TERRAFORM_CMD} destroy -parallelism=${params.Parallelism} -auto-approve"
