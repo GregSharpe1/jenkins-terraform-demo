@@ -1,6 +1,7 @@
 #!groovy
 
-def userInput
+def tf_apply_userInput
+def ansible_run_userInput
 
 pipeline {
   agent any
@@ -62,10 +63,10 @@ pipeline {
     }
   }
 
-  stage('Approval') {
+  stage('Terraform approval') {
     steps {
       script {
-        userInput = input(id: 'confirm',
+        tf_apply_userInput = input(id: 'confirm',
         message: 'Apply Terraform?',
         parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
       }
@@ -77,7 +78,7 @@ pipeline {
       ansiColor('xterm') {
         dir('terraform/') {
           script {
-            if (userInput == true) {
+            if (tf_apply_userInput == true) {
               if (params.RunDestroy ==~ /(?i)(N|NO|F|FALSE|OFF)/){
                 echo "Apply"
                 sh "${TERRAFORM_CMD} apply -parallelism=${params.Parallelism} -auto-approve"
@@ -93,7 +94,28 @@ pipeline {
       }
     }
   }
+  stage('Ansible approval?') {
+    steps {
+      script {
+        ansible_run_userInput = input(id: 'confirm',
+        message: 'Run Ansible?',
+        parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Would you like to run Ansible?', name: 'confirm'] ])
+      }
+    }
+  }
+  stage('Ansible') {
+    steps {
+      if (params.RunDestroy ==~ /(?i)(N|NO|F|FALSE|OFF)/) {
+        if (ansible_run_userInput == true) {
+          build job: 'JenkinsAnsibleStepDemo', parameters: [string(name: 'basebuild', value: true )]
+        } else {
+          echo "Skipping ansible run."
+        }
+      }
+    }
+  }
  }
+ stage('')
  post {
     always{
       deleteDir()
