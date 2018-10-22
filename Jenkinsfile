@@ -65,12 +65,12 @@ pipeline {
 
   stage('Terraform approval') {
     steps {
+      slackSend "Waiting for user to approve TF output."
       script {
         tf_apply_userInput = input(id: 'confirm',
         message: 'Apply Terraform?',
         parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
       }
-      slackSend "Waiting for user to approve TF output."
     }
   }
 
