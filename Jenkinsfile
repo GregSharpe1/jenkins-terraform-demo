@@ -103,8 +103,6 @@ pipeline {
         ansible_run_userInput = input(id: 'confirm',
         message: 'Run Ansible?',
         parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Would you like to run Ansible?', name: 'confirm'] ])
-      } else {
-        echo "Skipping ansible confirmation as running TF destroy."
       }
     }
   }
