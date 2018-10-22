@@ -111,7 +111,7 @@ pipeline {
     steps {
       script {
         if (ansible_run_userInput == true) {
-          build job: 'JenkinsAnsibleStepDemo', parameters: [string(name: 'basebuild', value: true )]
+          build job: 'JenkinsAnsibleStepDemo', parameters: [string(name: 'basebuild', value: "true" )]
         } else {
           echo "Skipping ansible run."
         }
