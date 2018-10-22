@@ -70,6 +70,7 @@ pipeline {
         message: 'Apply Terraform?',
         parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Apply terraform', name: 'confirm'] ])
       }
+      slackSend "Waiting for user to approve TF output."
     }
   }
 
@@ -82,9 +83,11 @@ pipeline {
               if (params.RunDestroy ==~ /(?i)(N|NO|F|FALSE|OFF)/){
                 echo "Apply"
                 sh "${TERRAFORM_CMD} apply -parallelism=${params.Parallelism} -auto-approve"
+                slackSend "Successfully built environment."
               } else {
                 echo "Destroy"
                 sh "${TERRAFORM_CMD} destroy -parallelism=${params.Parallelism} -auto-approve"
+                slackSend "Successfully destroyed environment."
               }
             } else {
               echo "Skipping"
@@ -104,6 +107,7 @@ pipeline {
         message: 'Run Ansible?',
         parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Would you like to run Ansible?', name: 'confirm'] ])
       }
+      slackSend "Waiting for user to approve ANSIBLE output."
     }
   }
   stage('Ansible') {
@@ -112,7 +116,8 @@ pipeline {
     }
     steps {
       script {
-          build job: 'JenkinsAnsibleStepDemo', parameters: [string(name: 'basebuild', value: "true" )]
+        slackSend "Running the ansible against env."  
+        build job: 'JenkinsAnsibleStepDemo', parameters: [string(name: 'basebuild', value: "true" )]
       }
     }
   }
