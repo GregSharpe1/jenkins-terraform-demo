@@ -115,7 +115,6 @@ pipeline {
     steps {
       script {
           build job: 'JenkinsAnsibleStepDemo', parameters: [string(name: 'basebuild', value: "true" )]
-        }
       }
     }
   }
