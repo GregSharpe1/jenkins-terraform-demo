@@ -105,11 +105,13 @@ pipeline {
   }
   stage('Ansible') {
     steps {
-      if (params.RunDestroy ==~ /(?i)(N|NO|F|FALSE|OFF)/) {
-        if (ansible_run_userInput == true) {
-          build job: 'JenkinsAnsibleStepDemo', parameters: [string(name: 'basebuild', value: true )]
-        } else {
-          echo "Skipping ansible run."
+      script {
+        if (params.RunDestroy ==~ /(?i)(N|NO|F|FALSE|OFF)/) {
+          if (ansible_run_userInput == true) {
+            build job: 'JenkinsAnsibleStepDemo', parameters: [string(name: 'basebuild', value: true )]
+          } else {
+            echo "Skipping ansible run."
+          }
         }
       }
     }
