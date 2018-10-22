@@ -95,25 +95,26 @@ pipeline {
     }
   }
   stage('Ansible approval?') {
+    when {
+      expression{params.RunDestroy ==~ /(?i)(N|NO|F|FALSE|OFF)/}
+    } 
     steps {
       script {
-        if (params.RunDestroy ==~ /(?i)(N|NO|F|FALSE|OFF)/) {
-          ansible_run_userInput = input(id: 'confirm',
-          message: 'Run Ansible?',
-          parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Would you like to run Ansible?', name: 'confirm'] ])
-        } else {
-          echo "Skipping ansible confirmation as running TF destroy."
-        }
+        ansible_run_userInput = input(id: 'confirm',
+        message: 'Run Ansible?',
+        parameters: [ [$class: 'BooleanParameterDefinition', defaultValue: false, description: 'Would you like to run Ansible?', name: 'confirm'] ])
+      } else {
+        echo "Skipping ansible confirmation as running TF destroy."
       }
     }
   }
   stage('Ansible') {
+    when {
+      expression{ansible_run_userInput == true}
+    }
     steps {
       script {
-        if (ansible_run_userInput == true) {
           build job: 'JenkinsAnsibleStepDemo', parameters: [string(name: 'basebuild', value: "true" )]
-        } else {
-          echo "Skipping ansible run."
         }
       }
     }
